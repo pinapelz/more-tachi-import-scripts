@@ -1,6 +1,7 @@
 import csv
 import json
 import argparse
+import time
 
 DIFFICULTY_MAPPING = {
     "NOVICE": "NOV",
@@ -19,7 +20,7 @@ LAMP_MAPPING = {
     "COMPLETE": "CLEAR",
 }
 
-def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service):
+def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
     encodings = ['utf-8-sig', 'utf-8', 'shift-jis', 'cp932']
 
     for encoding in encodings:
@@ -66,6 +67,10 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service):
                         optional_fields["maxCombo"] = int(row["maxCombo"])
                     if row.get("gauge"):
                         optional_fields["gauge"] = float(row["gauge"])
+                    if unixtime:
+                        if unixtime == "now":
+                            unixtime = int(time.time())*1000
+                        optional_fields["timeAchieved"] = unixtime
                     if optional_fields:
                         score_entry["optional"] = optional_fields
                     batch_manual["scores"].append(score_entry)
@@ -80,6 +85,8 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service):
 
 
 if __name__ == "__main__":
+    print("!!!!! WARNING !!!!!")
+    print("Please make sure you have read the README about SDVX's official CSV files before importing")
     parser = argparse.ArgumentParser(
         prog="sdvx_csv_to_tachi",
         description="Converts CSV data exported from SDVX eAmuse site to Tachi compatibile JSON",
@@ -88,6 +95,7 @@ if __name__ == "__main__":
     parser.add_argument("csv_filename", help="Path to the CSV file")
     parser.add_argument("-s", "--service", help="Service description to be shown on Tachi (Note for where this score came from)", default="SDVX Arcade Import")
     parser.add_argument("-o", "--output", help="Output filename", default="sdvx_tachi.json")
+    parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Input 'now' if you want to use current time. If no value is provided timeAchieved will not be added to the final JSON", default=None)
     args = parser.parse_args()
 
 try:
