@@ -10,7 +10,7 @@ DIFFICULTY_MAPPING = {
     "GRAVITY": "GRV",
     "HEAVENLY": "HVN",
     "VIVD": "VVD",
-    "EXCEED": "EXCEED",
+    "EXCEED": "XCD",
     "MAXIMUM": "MXM"
 }
 
