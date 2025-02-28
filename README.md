@@ -1,0 +1,1 @@
+Some scripts to convert from various sources to Tachi/Kamaitachi "Batch Manual" import jsons
