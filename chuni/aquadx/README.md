@@ -1,1 +1,3 @@
-`chuni_aquadx_to_tachi.py` is for converting the user data exported JSON from AquaNet. It does not require a connection to the DB
+This is for CHUNITHM NEW and beyond
+
+`chuni_aquadx_to_tachi.py` - Exports using data from AquaNet Web UI functionality. Does not require direct access to DB
