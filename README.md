@@ -3,5 +3,6 @@ Some scripts to convert from various sources to Tachi/Kamaitachi "Batch Manual" 
 Use with caution as there may be some cases missing.
 
 - SDVX e-amusement CSV
-- AquaDX/AquaNet Chuni User Data JSON
-- AquaDX/AquaNet maimai DX User Data JSON
+- AquaDX (Online Hosted) User Data JSON
+- AquaDX (Online Hosted) maimai DX User Data JSON
+- AquaDX (Online Hosted) O.N.G.E.K.I API recently played (no export functionality yet)
