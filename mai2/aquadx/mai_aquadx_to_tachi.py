@@ -39,6 +39,9 @@ def convert_chuni_aquadx_json_to_tachi_json(input_json: str, output_file: str, s
     if "userPlaylogList" in raw_data:
         for entry in raw_data["userPlaylogList"]:
             level = entry.get("level", 0)
+            if level not in DIFFICULTY_MAPPING.keys():
+                skipped_count += 1
+                continue
 
             processed_count += 1
             song_title = music_json[str(entry["musicId"])]["name"]
