@@ -29,7 +29,7 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                 "meta": {
                     "game": game,
                     "playtype": playtype,
-                    "service": service
+                    "service": service,
                 },
                 "scores": []
             }
@@ -44,9 +44,9 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
 
                 for row in reader:
                     lamp = LAMP_MAPPING[row["クリアランク"].upper()]
-                    if row.get("ULTIMATE CHAIN"):
+                    if row.get("ULTIMATE CHAIN") == "1":
                         lamp = "ULTIMATE CHAIN"
-                    if row.get("PERFECT"):
+                    if row.get("PERFECT") == "1":
                         lamp = "PERFECT ULTIMATE CHAIN"
 
                     score_entry = {
@@ -55,6 +55,7 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                         "matchType": "songTitle",
                         "identifier": row["楽曲名"],
                         "difficulty": DIFFICULTY_MAPPING[row["難易度"].upper()],
+                        "timeAchieved": unixtime
                     }
                     optional_fields = {}
                     if row.get("EXスコア"):
@@ -70,7 +71,6 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                     if unixtime:
                         if unixtime == "now":
                             unixtime = int(time.time())*1000
-                        optional_fields["timeAchieved"] = unixtime
                     if optional_fields:
                         score_entry["optional"] = optional_fields
                     batch_manual["scores"].append(score_entry)
@@ -97,9 +97,10 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="Output filename", default="sdvx_tachi.json")
     parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Input 'now' if you want to use current time. If no value is provided timeAchieved will not be added to the final JSON", default=None)
     args = parser.parse_args()
+    curr_time = int(time.time() * 1000) if (args.time == "now" or args.time is None) else args.time
 
 try:
-    output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service)
+    output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time)
 
     with open(args.output, "w", encoding="utf-8") as json_file:
         json.dump(output_json, json_file, ensure_ascii=False, indent=4)
