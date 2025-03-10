@@ -10,7 +10,7 @@ DIFFICULTY_MAPPING = {
     5: "WORLD'S END",
 }
 
-def convert_chuni_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str):
+def convert_from_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str):
     with open(input_json, "r", encoding="utf-8") as f:
         raw_data = json.load(f)
 
@@ -102,4 +102,4 @@ if __name__ == "__main__":
         "-o", "--output", help="Output filename", default="aquadx_chuni_tachi.json"
     )
     args = parser.parse_args()
-    convert_chuni_aquadx_json_to_tachi_json(args.input_file, args.output, args.service)
+    convert_from_aquadx_json_to_tachi_json(args.input_file, args.output, args.service)

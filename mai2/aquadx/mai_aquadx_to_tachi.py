@@ -16,7 +16,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 }
 
-def convert_chuni_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str, music_json: str):
+def convert_from_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str, music_json: str):
     if music_json == "online":
         req = urllib.request.Request(MAI2_AQUADX_JSON, headers=headers)
         with urllib.request.urlopen(req) as response:
@@ -119,4 +119,4 @@ if __name__ == "__main__":
     )
     parser.add_argument("--music", "--music-file", help="JSON file containing the mappings of song names to IDs. Check README for moe info", default="online")
     args = parser.parse_args()
-    convert_chuni_aquadx_json_to_tachi_json(args.input_file, args.output, args.service, args.music)
+    convert_from_aquadx_json_to_tachi_json(args.input_file, args.output, args.service, args.music)
