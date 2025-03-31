@@ -46,8 +46,8 @@ def convert_from_aquadx_json_to_tachi_json(input_json: str, output_file: str, se
             processed_count += 1
             song_title = music_json[str(entry["musicId"])]["name"]
 
-            raw_score_value = str(entry.get("achievement", 0))
-            score_value = float(f"{raw_score_value[:2]}.{raw_score_value[2]}")
+            raw_score_value = float(entry.get("achievement", 0))
+            score_value = raw_score_value/10000
             is_clear = entry.get("isClear", False)
             is_full_combo = entry.get("isFullCombo", False)
             is_all_perfect = entry.get("isAllPerfect", False)
