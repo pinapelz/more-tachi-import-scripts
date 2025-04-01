@@ -124,7 +124,7 @@ if __name__ == "__main__":
         with open(args.file, "r", encoding="utf-8") as f:
             raw_data = json.load(f)
     else:
-        print("Pulling Chuni plyadata from remote AquaDX at: " + aquadx_url)
+        print("Pulling Chuni playdata from remote AquaDX at: " + aquadx_url)
         req = urllib.request.Request(aquadx_url+"/api/v2/game/chu3/export?token="+args.token, headers=headers)
         with urllib.request.urlopen(req) as response:
             raw_data = json.load(response)
