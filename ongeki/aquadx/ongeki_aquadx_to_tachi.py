@@ -2,6 +2,8 @@ import argparse
 import json
 import urllib.request
 import os
+import pytz
+from datetime import datetime
 
 ONGEKI_AQUADX_JSON = "https://aquadx.net/d/ongeki/00/all-music.json"
 
@@ -55,7 +57,8 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
             bell_lamp = "FULL BELL" if is_full_bell else "NONE"
 
 
-            timestamp = entry.get("sortNumber", None)
+            dt = datetime.fromisoformat(entry.get("userPlayDate").rstrip("Z")).replace(tzinfo=pytz.UTC)
+            timestamp = int(dt.timestamp())
             combo = entry.get("maxCombo",0)
             bell_count = entry.get("bellCount",0)
             total_bell_count = entry.get("totalBellCount", 0)
