@@ -1,5 +1,7 @@
 import argparse
 import json
+import urllib.request
+import os
 
 DIFFICULTY_MAPPING = {
     0: "BASIC",
@@ -10,10 +12,11 @@ DIFFICULTY_MAPPING = {
     5: "WORLD'S END",
 }
 
-def convert_from_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str):
-    with open(input_json, "r", encoding="utf-8") as f:
-        raw_data = json.load(f)
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+}
 
+def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, service: str):
     batch_manual = {
         "meta": {"game": "chunithm", "playtype": "Single", "service": service},
         "scores": [],
@@ -91,15 +94,38 @@ if __name__ == "__main__":
         description="Converts AquaDX score data for Chuni to Tachi compatible JSON",
         epilog="Fast/Slow can't be derived (I think)",
     )
-    parser.add_argument("input_file", help="Path to the input JSON file exported from AquaDX")
+    parser.add_argument("-f", "--file", help="Manual. Specify path to the input exported score JSON file exported from AquaDX", required=False)
     parser.add_argument(
         "-s",
         "--service",
         help="Service description to be shown on Tachi (Note for where this score came from)",
         default="AquaDX Chuni Import",
     )
+    parser.add_argument("-t", "--token", help="Use AquaNet Token to directly grab data from API. Get it from Network tab in your browser and check the API request it makes ?token=???", required=False)
+    parser.add_argument("-u", "--url", help="AquaNet API endpoint. No need to use this unless you self-host AquaDX", default="https://aquadx.net/aqua")
     parser.add_argument(
         "-o", "--output", help="Output filename", default="aquadx_chuni_tachi.json"
     )
     args = parser.parse_args()
-    convert_from_aquadx_json_to_tachi_json(args.input_file, args.output, args.service)
+    # Some checks to make sure input is valid
+    if args.token is None and args.file is None:
+        print("ERROR: No valid input method specified. You must specify either --file or --token")
+        exit(1)
+    aquadx_url = args.url
+    if not aquadx_url.startswith("https://") and not aquadx_url.startswith("http://"):
+        aquadx_url = "https://" + aquadx_url
+
+
+    if args.file is not None:
+        print("An input file has been specified, using local file as input")
+        if not os.path.exists(args.file):
+            print(f"ERROR: The file {args.file} does not exist.")
+            exit(1)
+        with open(args.file, "r", encoding="utf-8") as f:
+            raw_data = json.load(f)
+    else:
+        print("Pulling Chuni playdata from remote AquaDX at: " + aquadx_url)
+        req = urllib.request.Request(aquadx_url+"/api/v2/game/chu3/export?token="+args.token, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            raw_data = json.load(response)
+    convert_from_aquadx_json_to_tachi_json(raw_data, args.output, args.service)
