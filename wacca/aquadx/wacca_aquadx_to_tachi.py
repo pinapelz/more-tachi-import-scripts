@@ -2,9 +2,10 @@ import argparse
 import json
 import urllib.request
 import pytz
+import os
 from datetime import datetime
 
-ONGEKI_AQUADX_JSON = "https://aquadx.net/d/wacca/00/all-music.json"
+WACCA_AQUADX_JSON = "https://aquadx.net/d/wacca/00/all-music.json"
 
 DIFFICULTY_MAPPING = {
     0: "NORMAL",
@@ -18,17 +19,6 @@ headers = {
 }
 
 def convert_to_aquadx_json_to_tachi_json(input_json: str, output_file: str, service: str, music_json: str):
-    if music_json == "online":
-        req = urllib.request.Request(ONGEKI_AQUADX_JSON, headers=headers)
-        with urllib.request.urlopen(req) as response:
-            music_json = json.load(response)
-    else:
-        with open(music_json, "r", encoding="utf-8") as file:
-            music_json = json.load(file)
-
-    with open(input_json, "r", encoding="utf-8") as f:
-        raw_data = json.load(f)
-
     batch_manual = {
         "meta": {"game": "wacca", "playtype": "Single", "service": service},
         "scores": [],
@@ -107,16 +97,48 @@ if __name__ == "__main__":
         description="Converts AquaDX API JSON for WACCA to Tachi compatible JSON",
         epilog="damage, fast, slow, unavailable on the webui"
     )
-    parser.add_argument("input_file", help="Path to the input JSON file exported from AquaDX")
+    parser.add_argument("-f", "--file", help="Manual. Specify path to the input exported score JSON file exported from AquaDX", required=False)
     parser.add_argument(
         "-s",
         "--service",
         help="Service description to be shown on Tachi (Note for where this score came from)",
-        default="AquaDX WACCA Import (API JSON)",
+        default="AquaDX Chuni Import",
     )
+    parser.add_argument("-t", "--token", help="Use AquaNet Token to directly grab data from API. Get it from Network tab in your browser and check the API request it makes ?token=???", required=False)
+    parser.add_argument("-u", "--url", help="AquaNet API endpoint. No need to use this unless you self-host AquaDX", default="https://aquadx.net/aqua")
     parser.add_argument(
         "-o", "--output", help="Output filename", default="aquadx_wacca_tachi.json"
     )
-    parser.add_argument("--music", "--music-file", help="JSON file containing the mappings of song names to IDs. Check README for moe info", default="online")
+    parser.add_argument("-m", "--music", help="all-music.json from AquaNet that maps song id to name (required for Tachi). It will automatically pull from main AquaDX if not specified", default="online")
     args = parser.parse_args()
-    convert_to_aquadx_json_to_tachi_json(args.input_file, args.output, args.service, args.music)
+    # Some checks to make sure input is valid
+    if args.token is None and args.file is None:
+        print("ERROR: No valid input method specified. You must specify either --file or --token")
+        exit(1)
+    aquadx_url = args.url
+    if not aquadx_url.startswith("https://") and not aquadx_url.startswith("http://"):
+        aquadx_url = "https://" + aquadx_url
+
+
+    if args.file is not None:
+        print("An input file has been specified, using local file as input")
+        if not os.path.exists(args.file):
+            print(f"ERROR: The file {args.file} does not exist.")
+            exit(1)
+        with open(args.file, "r", encoding="utf-8") as f:
+            raw_data = json.load(f)
+    else:
+        print("Pulling WACCA playdata from remote AquaDX at: " + aquadx_url)
+        req = urllib.request.Request(aquadx_url+"/api/v2/game/wacca/user-summary?username=pinapelz&token="+args.token, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            raw_data = json.load(response)
+
+    if args.music == "online":
+        req = urllib.request.Request(WACCA_AQUADX_JSON, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            music_json = json.load(response)
+    else:
+        with open(args.music, "r", encoding="utf-8") as file:
+            music_json = json.load(file)
+    args = parser.parse_args()
+    convert_to_aquadx_json_to_tachi_json(raw_data, args.output, args.service, music_json)

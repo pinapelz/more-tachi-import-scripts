@@ -113,7 +113,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--token", help="Use AquaNet Token to directly grab data from API. Get it from Network tab in your browser and check the API request it makes ?token=???", required=False)
     parser.add_argument("-u", "--url", help="AquaNet API endpoint. No need to use this unless you self-host AquaDX", default="https://aquadx.net/aqua")
     parser.add_argument(
-        "-o", "--output", help="Output filename", default="aquadx_mai2_tachi.json"
+        "-o", "--output", help="Output filename", default="aquadx_ongeki_tachi.json"
     )
     parser.add_argument("-m", "--music", help="all-music.json from AquaNet that maps song id to name (required for Tachi). It will automatically pull from main AquaDX if not specified", default="online")
     args = parser.parse_args()
