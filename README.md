@@ -11,3 +11,20 @@ Use with caution as there may be some cases missing.
 
 > [!CAUTION]
 > If you are using Kamaitachi or using someone else's Tachi instance please check the rules to ensure that you are complying with the rules before importing your scores!!!
+
+# Usage
+All scripts are self-contained and can be run on their own after pip resolves potential dependencies. A global list of dependencies can be found in `requirements.txt`
+
+Windows (Powershell)
+```bash
+python -m venv venv
+./venv/Scripts/activate
+pip install -r requirements.txt
+```
+
+Linux
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
