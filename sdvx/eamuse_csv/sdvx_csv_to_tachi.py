@@ -20,7 +20,25 @@ LAMP_MAPPING = {
     "COMPLETE": "CLEAR",
 }
 
-def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
+def create_date_dict(raw_site_data: str) -> dict:
+    from bs4 import BeautifulSoup
+    from datetime import datetime
+    import pytz
+    soup = BeautifulSoup(raw_site_data, 'html.parser')
+    cat_divs = soup.find_all('div', class_='cat')[5:]
+    jst = pytz.timezone('Asia/Tokyo')
+    date_data = {}
+    for div in cat_divs:
+        inners = div.find_all('div', class_='inner')
+        date = inners[0].get_text(strip=True)
+        music_name = inners[1].find('p', class_='music_name').get_text(strip=True)
+        date_obj = datetime.strptime(date, "%Y/%m/%d %H:%M:%S")
+        date_obj_jst = jst.localize(date_obj)
+        date_obj_unixtime = int(date_obj_jst.timestamp() * 1000)
+        date_data[music_name] = date_obj_unixtime
+    return date_data
+
+def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime, date_dict):
     encodings = ['utf-8-sig', 'utf-8', 'shift-jis', 'cp932']
 
     for encoding in encodings:
@@ -48,6 +66,7 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                         lamp = "ULTIMATE CHAIN"
                     if row.get("PERFECT") == "1":
                         lamp = "PERFECT ULTIMATE CHAIN"
+                    time_stamp = date_dict.get(row["楽曲名"], unixtime if unixtime != "now" else int(time.time())*1000)
 
                     score_entry = {
                         "score": int(row["ハイスコア"]),
@@ -55,7 +74,7 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                         "matchType": "songTitle",
                         "identifier": row["楽曲名"],
                         "difficulty": DIFFICULTY_MAPPING[row["難易度"].upper()],
-                        "timeAchieved": unixtime
+                        "timeAchieved": time_stamp
                     }
                     optional_fields = {}
                     if row.get("EXスコア"):
@@ -68,9 +87,6 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
                         optional_fields["maxCombo"] = int(row["maxCombo"])
                     if row.get("gauge"):
                         optional_fields["gauge"] = float(row["gauge"])
-                    if unixtime:
-                        if unixtime == "now":
-                            unixtime = int(time.time())*1000
                     if optional_fields:
                         score_entry["optional"] = optional_fields
                     batch_manual["scores"].append(score_entry)
@@ -87,6 +103,7 @@ def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime):
 if __name__ == "__main__":
     print("!!!!! WARNING !!!!!")
     print("Please make sure you have read the README about SDVX's official CSV files before importing")
+    print("If you pass in a date file make sure the HTML is unformatted otherwise the spacing for song names will be wrong!")
     parser = argparse.ArgumentParser(
         prog="sdvx_csv_to_tachi",
         description="Converts CSV data exported from SDVX eAmuse site to Tachi compatibile JSON",
@@ -95,12 +112,23 @@ if __name__ == "__main__":
     parser.add_argument("csv_filename", help="Path to the CSV file")
     parser.add_argument("-s", "--service", help="Service description to be shown on Tachi (Note for where this score came from)", default="SDVX Arcade Import")
     parser.add_argument("-o", "--output", help="Output filename", default="sdvx_tachi.json")
-    parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Input 'now' if you want to use current time. If no value is provided timeAchieved will not be added to the final JSON", default=None)
+    parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Defaults to current UNIX time", default=None)
+    parser.add_argument("-d", "--date_file", help="SDVX e-amusement profile site saved HTML. See README in sdvx/eamuse_csv for instructions. Overrides with --time input if missing", required=False)
+    parser.add_argument("-tz", "--timezone", help="Only needed if -d is used, specifies what timezone to convert to", required=False)
     args = parser.parse_args()
     curr_time = int(time.time() * 1000) if (args.time == "now" or args.time is None) else args.time
 
+    if args.date_file and not args.timezone:
+        print("ERROR: A date file is provided but no target timezone (-tz) has been specified. Please pass the timezone in which you played the scores")
+        exit(1)
+
+    date_data = {}
+    if args.date_file:
+        with open(args.date_file, "r") as file:
+            site_data = file.read()
+            date_data = create_date_dict(site_data)
 try:
-    output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time)
+    output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time, date_data)
 
     with open(args.output, "w", encoding="utf-8") as json_file:
         json.dump(output_json, json_file, ensure_ascii=False, indent=4)
