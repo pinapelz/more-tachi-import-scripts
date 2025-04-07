@@ -10,7 +10,7 @@ DIFFICULTY_MAPPING = {
     "INFINITE": "INF",
     "GRAVITY": "GRV",
     "HEAVENLY": "HVN",
-    "VIVD": "VVD",
+    "VIVID": "VVD",
     "EXCEED": "XCD",
     "MAXIMUM": "MXM"
 }
