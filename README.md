@@ -5,7 +5,7 @@ Use with caution as there may be some cases missing.
 - [SDVX e-amusement CSV (with limited Session/Date data)](./sdvx/eamuse_csv)
 - [CHUNITHM AquaDX (Online Hosted) User Data Export JSON](./chuni/aquadx)
 - [maimai DX AquaDX (Online Hosted) User Data Export JSON](./mai2/aquadx)
-- [O.N.G.E.K.I AquaDX (Online Hosted) API recently played (no export functionality in AquaNet yet)](./mu3/aquadx)
+- [O.N.G.E.K.I AquaDX (Online Hosted) API recently played (no export functionality in AquaNet yet)](./ongeki/aquadx)
 - [WACCA AquaDX (Online Hosted) API recently played (no export functionality in AquaNet yet)](./wacca/aquadx)
 
 
