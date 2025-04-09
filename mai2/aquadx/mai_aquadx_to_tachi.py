@@ -39,6 +39,7 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
             except KeyError:
                 skipped_count += 1
                 continue
+            version = music_json[str(entry["musicId"])]["ver"]
 
             raw_score_value = entry.get("achievement", 0)
             score_value = float(raw_score_value/10000)
@@ -67,12 +68,16 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
             good = entry.get("tapGood", 0) + entry.get("holdGood", 0) + entry.get("slideGood", 0)  + entry.get("touchGood", 0) + entry.get("breakGood", 0)
             miss = entry.get("tapMiss", 0) + entry.get("holdMiss", 0) + entry.get("slideMiss", 0)  + entry.get("touchMiss", 0) + entry.get("breakMiss", 0)
 
+            difficulty = DIFFICULTY_MAPPING[level]
+            if int(version) < 20000:
+                print(song_title)
+                difficulty = str(difficulty[3:])
             score_entry = {
                 "percent": score_value,
                 "lamp": lamp,
                 "matchType": "songTitle",
                 "identifier": str(song_title),
-                "difficulty": DIFFICULTY_MAPPING[level],
+                "difficulty": difficulty,
                 "timeAchieved": timestamp * 1000 if timestamp else None,
                 "judgements": {
                     "pcrit": pcrit,
