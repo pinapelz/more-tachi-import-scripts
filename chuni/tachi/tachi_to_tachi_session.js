@@ -47,7 +47,6 @@ javascript: void (function () {
       const parts = judgementText.split("-").map((x) => parseInt(x.trim()));
       const [jcrit, justice, attack, miss] = parts;
       const lamp = cells[5].innerText.trim();
-      const rating = parseFloat(cells[6].innerText.trim());
       const timestampCellLines = cells[7].innerText.trim().split("\n");
       const dateString =
         timestampCellLines.find((line) => /\w+ \d+, \d+/.test(line)) || "";
@@ -59,7 +58,6 @@ javascript: void (function () {
         difficulty,
         identifier: title,
         artist,
-        rating,
         judgements: { jcrit, justice, attack, miss },
         timeAchieved,
       });
