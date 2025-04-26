@@ -173,3 +173,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .csv
+old.csv
+sdvx_merged.csv
+sdvx_tachi.json
+*.html

@@ -18,6 +18,9 @@ DIFFICULTY_MAPPING = {
 LAMP_MAPPING = {
     "PLAYED": "FAILED",
     "COMPLETE": "CLEAR",
+    "MAXXIVE COMPLETE": "MAXXIVE CLEAR",
+    "ULTIMATE CHAIN": "ULTIMATE CHAIN",
+    "EXCESSIVE COMPLETE": "EXECESSIVE CLEAR"
 }
 
 def create_date_dict(raw_site_data: str) -> dict:
