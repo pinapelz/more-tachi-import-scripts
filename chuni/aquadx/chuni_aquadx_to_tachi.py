@@ -45,15 +45,16 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
             is_full_combo = entry.get("isFullCombo", False)
             is_all_justice = entry.get("isAllJustice", False)
             is_all_perfect = entry.get("isAllPerfect", False)
-            lamp = "FAILED"
+            note_lamp = "NONE"
+            clear_lamp = "FAILED" # AquaNet doesn't export other clear lamps?
             if is_all_perfect:
-                lamp = "ALL JUSTICE CRITICAL"
+                note_lamp = "ALL JUSTICE CRITICAL"
             elif is_all_justice:
-                lamp = "ALL JUSTICE"
+                note_lamp = "ALL JUSTICE"
             elif is_full_combo:
-                lamp = "FULL COMBO"
+                note_lamp = "FULL COMBO"
             elif is_clear:
-                lamp = "CLEAR"
+                clear_lamp = "CLEAR"
             timestamp = entry.get("sortNumber", None)
 
             jcrit = entry.get("judgeHeaven", 0) + entry.get("judgeCritical", 0)
@@ -64,7 +65,8 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
 
             score_entry = {
                 "score": score_value,
-                "lamp": lamp,
+                "noteLamp": note_lamp,
+                "clearLamp": clear_lamp,
                 "matchType": "inGameID",
                 "identifier": str(music_id),
                 "difficulty": DIFFICULTY_MAPPING[level],
