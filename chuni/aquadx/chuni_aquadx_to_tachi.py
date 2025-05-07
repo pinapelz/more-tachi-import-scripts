@@ -12,6 +12,15 @@ DIFFICULTY_MAPPING = {
     5: "WORLD'S END",
 }
 
+CLASSES_MAPPING = {
+    1: "DAN_I",
+    2: "DAN_II",
+    3: "DAN_III",
+    4: "DAN_IV",
+    5: "DAN_V",
+    6: "DAN_INFINITE"
+}
+
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 }
@@ -20,7 +29,16 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
     batch_manual = {
         "meta": {"game": "chunithm", "playtype": "Single", "service": service},
         "scores": [],
+        "classes": {}
     }
+    class_emblem_base = raw_data["userData"]["classEmblemBase"]
+    class_emblem_medal = raw_data["userData"]["classEmblemMedal"]
+
+    if class_emblem_base > 0:
+        batch_manual["classes"]["emblem"] = CLASSES_MAPPING[class_emblem_base]
+
+    if class_emblem_medal > 0:
+        batch_manual["classes"]["dan"] = CLASSES_MAPPING[class_emblem_medal]
 
     processed_count = 0
     skipped_count = 0
