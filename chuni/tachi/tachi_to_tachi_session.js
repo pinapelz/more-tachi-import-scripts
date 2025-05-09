@@ -47,13 +47,41 @@ javascript: void (function () {
       const parts = judgementText.split("-").map((x) => parseInt(x.trim()));
       const [jcrit, justice, attack, miss] = parts;
       const lamp = cells[5].innerText.trim();
+      let clearLamp = "FAILED";
+      let noteLamp = "NONE";
+
+      if (lamp.includes("FULL COMBO")) {
+        noteLamp = "FULL COMBO";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("ALL JUSTICE")) {
+        noteLamp = "ALL JUSTICE";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("ALL JUSTICE CRITICAL")) {
+        noteLamp = "ALL JUSTICE CRITICAL";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("HARD")) {
+        clearLamp = "HARD";
+      }
+      if (lamp.includes("BRAVE")) {
+        clearLamp = "BRAVE";
+      }
+      if (lamp.includes("ABSOLUTE")) {
+        clearLamp = "ABSOLUTE";
+      }
+      if (lamp.includes("CATASTROPHY")) {
+        clearLamp = "CATASTROPHY";
+      }
       const timestampCellLines = cells[7].innerText.trim().split("\n");
       const dateString =
         timestampCellLines.find((line) => /\w+ \d+, \d+/.test(line)) || "";
       const timeAchieved = dateString ? new Date(dateString).getTime() : 0;
       results.scores.push({
         score: scoreValue,
-        lamp,
+        clearLamp,
+        noteLamp,
         matchType: "songTitle",
         difficulty,
         identifier: title,

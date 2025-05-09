@@ -46,6 +46,33 @@ javascript:void(function () {
       const slow = fastSlowMatch ? parseInt(fastSlowMatch[2]) : undefined;
 
       const lamp = cells[7].innerText.trim();
+      let clearLamp = "FAILED";
+      let noteLamp = "NONE";
+
+      if (lamp.includes("FULL COMBO")) {
+        noteLamp = "FULL COMBO";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("ALL JUSTICE")) {
+        noteLamp = "ALL JUSTICE";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("ALL JUSTICE CRITICAL")) {
+        noteLamp = "ALL JUSTICE CRITICAL";
+        clearLamp = "CLEAR";
+      }
+      if (lamp.includes("HARD")) {
+        clearLamp = "HARD";
+      }
+      if (lamp.includes("BRAVE")) {
+        clearLamp = "BRAVE";
+      }
+      if (lamp.includes("ABSOLUTE")) {
+        clearLamp = "ABSOLUTE";
+      }
+      if (lamp.includes("CATASTROPHY")) {
+        clearLamp = "CATASTROPHY";
+      }
       const rating = parseFloat(cells[8].innerText.trim());
 
       const timestampText = cells[10].innerText.trim().split("\n");
@@ -54,7 +81,8 @@ javascript:void(function () {
 
       const score = {
         score: scoreValue,
-        lamp,
+        clearLamp,
+        noteLamp,
         matchType: "songTitle",
         difficulty,
         identifier: title,
