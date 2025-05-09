@@ -2,12 +2,20 @@
 Some scripts to convert from various sources to Tachi/Kamaitachi "Batch Manual" import jsons.
 Use with caution as there may be some cases missing.
 
+- [CHUNITHM AquaDX (AquaNet WebUI Export) User Data Export JSON](./chuni/aquadx)
+- [maimai DX AquaDX (AquaNet WebUI Export) User Data Export JSON](./mai2/aquadx)
+- [O.N.G.E.K.I AquaDX API recently played (no export functionality in AquaNet yet)](./ongeki/aquadx)
+- [WACCA AquaDX API recently played (no export functionality in AquaNet yet)](./wacca/aquadx)
+
 - [SDVX e-amusement CSV (with limited Session/Date data)](./sdvx/eamuse_csv)
-- [CHUNITHM AquaDX (Online Hosted) User Data Export JSON](./chuni/aquadx)
-- [CHUNITHM Tachi to Tachi (Good for MYT data)](./chuni/tachi)
-- [maimai DX AquaDX (Online Hosted) User Data Export JSON](./mai2/aquadx)
-- [O.N.G.E.K.I AquaDX (Online Hosted) API recently played (no export functionality in AquaNet yet)](./ongeki/aquadx)
-- [WACCA AquaDX (Online Hosted) API recently played (no export functionality in AquaNet yet)](./wacca/aquadx)
+- [jubeat Asphyxia-CZEAve](./jubeat/asphyxia)
+
+**Export from Tachi**
+This is useful if you want to use your data on Tachi for something else and you do not have access to DB. Converts scores as shown on the site back to a batch-manual format
+- [CHUNITHM](./chuni/tachi)
+- [maimai DX](./mai2/tachi)
+- [O.N.G.E.K.I](./ongeki/tachi)
+- [WACCA](./wacca/tachi)
 
 
 > [!CAUTION]
