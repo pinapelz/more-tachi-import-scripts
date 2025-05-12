@@ -65,7 +65,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o", "--output", help="Output filename", default="czeave_asphyxia_batch_manual.json"
     )
-    parser.add_argument("-p", "--profile", help="Asphyxia Profile ID to export for")
+    parser.add_argument("-p", "--profile", help="Asphyxia Profile ID to export for", required=True)
     args = parser.parse_args()
     if args.file is None:
         print("ERROR: Please specify Asphyxia DB file (from savedata folder)")
