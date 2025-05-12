@@ -59,9 +59,9 @@ if __name__ == "__main__":
         "-s",
         "--service",
         help="Service description to be shown on Tachi (Note for where this score came from)",
-        default="jubeat Asphyxia czeave",
+        default="jubeat Asphyxia CZEAve",
     )
-    parser.add_argument("-f", "--file", help="AsphyxiaCORE jubeat .db file czeave", required=True)
+    parser.add_argument("-f", "--file", help="AsphyxiaCORE jubeat .db file (jubeat@asphyxia.db)", required=True)
     parser.add_argument(
         "-o", "--output", help="Output filename", default="czeave_asphyxia_batch_manual.json"
     )
