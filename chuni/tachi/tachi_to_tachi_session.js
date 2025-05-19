@@ -54,6 +54,9 @@ javascript: void (function () {
         noteLamp = "FULL COMBO";
         clearLamp = "CLEAR";
       }
+      if (lamp.includes("CLEAR")) {
+        clearLamp = "CLEAR";
+      }
       if (lamp.includes("ALL JUSTICE")) {
         noteLamp = "ALL JUSTICE";
         clearLamp = "CLEAR";
