@@ -13,13 +13,13 @@ SEQUENCE_MAP = {
     2: "EXT"
 }
 
-def convert_from_czeave_json_to_tachi_json(file: str, output_path: str, service: str):
+def convert_from_czeave_json_to_tachi_json(file: str, output_path: str, service: str, profile_id: str):
     with open(file, "r", encoding="utf-8") as infile:
         batch_manual = {
             "meta": {"game": "jubeat", "playtype": "Single", "service": service},
         }
         scores = []
-        data = [json.loads(line) for line in infile if '"collection":"score"' in line]
+        data = [json.loads(line) for line in infile if '"collection":"score"' in line and profile_id in line]
         for score in data:
             difficulty = SEQUENCE_MAP[score["seq"]]
             if score["isHardMode"]:
@@ -59,12 +59,13 @@ if __name__ == "__main__":
         "-s",
         "--service",
         help="Service description to be shown on Tachi (Note for where this score came from)",
-        default="jubeat Asphyxia czeave",
+        default="jubeat Asphyxia CZEAve",
     )
-    parser.add_argument("-f", "--file", help="AsphyxiaCORE jubeat .db file czeave", required=True)
+    parser.add_argument("-f", "--file", help="AsphyxiaCORE jubeat .db file (jubeat@asphyxia.db)", required=True)
     parser.add_argument(
         "-o", "--output", help="Output filename", default="czeave_asphyxia_batch_manual.json"
     )
+    parser.add_argument("-p", "--profile", help="Asphyxia Profile ID to export for", required=True)
     args = parser.parse_args()
     if args.file is None:
         print("ERROR: Please specify Asphyxia DB file (from savedata folder)")
@@ -73,4 +74,4 @@ if __name__ == "__main__":
         print(f"ERROR: The file {args.file} does not exist.")
         exit(1)
 
-    convert_from_czeave_json_to_tachi_json(args.file, args.output, args.service)
+    convert_from_czeave_json_to_tachi_json(args.file, args.output, args.service, args.profile)
