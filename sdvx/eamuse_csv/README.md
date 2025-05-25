@@ -34,3 +34,24 @@ To get this data. Navigate to the e-amusement URL below and press CTRL+S to save
 ```
 https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 ```
+
+# Arguments
+## `sdvx_csv_to_tachi`
+
+| Argument      | Short   | Description                                                                                                                 | Default                |
+|:-------------:|:-------:|:---------------------------------------------------------------------------------------------------------------------------:|:----------------------:|
+| `csv_filename`| —       | Path to the CSV file                                                                                                       | —                      |
+| `--service`   | `-s`    | Service description to be shown on Tachi (Note for where this score came from)                                              | `SDVX Arcade Import`   |
+| `--output`    | `-o`    | Output filename                                                                                                             | `sdvx_tachi.json`      |
+| `--game`      | `-g`    | Version of the game. Surely there will be another one right...                                                              | `EXCEED_GEAR`          |
+| `--time`      | `-t`    | UNIX time (in milliseconds) that should be added to the scores. Defaults to current UNIX time                                | `None`                 |
+| `--date_file` | `-d`    | SDVX e-amusement profile site saved HTML. See README in sdvx/eamuse_csv for instructions. Overrides with --time input if missing | —                   |
+| `--timezone`  | `-tz`   | Only needed if -d is used, specifies what timezone to convert to                                                            | —                      |
+
+## `eamuse_merge_to_csv`
+
+| Argument    | Short | Description                                           | Default            |
+|:-----------:|:-----:|:-----------------------------------------------------:|:------------------:|
+| `--old`     | —     | Old CSV file                                          | (Required)         |
+| `--new`     | —     | New CSV file                                          | (Required)         |
+| `--output`  | —     | Output File                                           | `sdvx_merged.csv`  |

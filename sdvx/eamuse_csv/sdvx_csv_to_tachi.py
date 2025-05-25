@@ -23,23 +23,27 @@ LAMP_MAPPING = {
     "EXCESSIVE COMPLETE": "EXCESSIVE CLEAR"
 }
 
-def create_date_dict(raw_site_data: str) -> dict:
+def create_date_dict(game_ver:str, raw_site_data: str) -> dict:
     from bs4 import BeautifulSoup
     from datetime import datetime
     import pytz
-    soup = BeautifulSoup(raw_site_data, 'html.parser')
-    cat_divs = soup.find_all('div', class_='cat')[5:]
-    jst = pytz.timezone('Asia/Tokyo')
-    date_data = {}
-    for div in cat_divs:
-        inners = div.find_all('div', class_='inner')
-        date = inners[0].get_text(strip=True)
-        music_name = inners[1].find('p', class_='music_name').get_text(strip=True)
-        date_obj = datetime.strptime(date, "%Y/%m/%d %H:%M:%S")
-        date_obj_jst = jst.localize(date_obj)
-        date_obj_unixtime = int(date_obj_jst.timestamp() * 1000)
-        date_data[music_name] = date_obj_unixtime
-    return date_data
+    if game_ver == "EXCEED_GEAR":
+        soup = BeautifulSoup(raw_site_data, 'html.parser')
+        cat_divs = soup.find_all('div', class_='cat')[5:]
+        jst = pytz.timezone('Asia/Tokyo')
+        date_data = {}
+        for div in cat_divs:
+            inners = div.find_all('div', class_='inner')
+            date = inners[0].get_text(strip=True)
+            music_name = inners[1].find('p', class_='music_name').get_text(strip=True)
+            date_obj = datetime.strptime(date, "%Y/%m/%d %H:%M:%S")
+            date_obj_jst = jst.localize(date_obj)
+            date_obj_unixtime = int(date_obj_jst.timestamp() * 1000)
+            date_data[music_name] = date_obj_unixtime
+        return date_data
+    else:
+        print("NO VALID GAME VERSION SPECIFIED TO CREATE DATE DATA. SEE README")
+        exit(1)
 
 def convert_sdvx_csv_to_tachi_json(csv_file, game, playtype, service, unixtime, date_dict):
     encodings = ['utf-8-sig', 'utf-8', 'shift-jis', 'cp932']
@@ -115,10 +119,12 @@ if __name__ == "__main__":
     parser.add_argument("csv_filename", help="Path to the CSV file")
     parser.add_argument("-s", "--service", help="Service description to be shown on Tachi (Note for where this score came from)", default="SDVX Arcade Import")
     parser.add_argument("-o", "--output", help="Output filename", default="sdvx_tachi.json")
+    parser.add_argument("-g", "--game", help="Version of the game. Surely there will be another one right...", default="EXCEED_GEAR")
     parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Defaults to current UNIX time", default=None)
     parser.add_argument("-d", "--date_file", help="SDVX e-amusement profile site saved HTML. See README in sdvx/eamuse_csv for instructions. Overrides with --time input if missing", required=False)
     parser.add_argument("-tz", "--timezone", help="Only needed if -d is used, specifies what timezone to convert to", required=False)
     args = parser.parse_args()
+    assert args.game in ["EXCEED_GEAR"]
     curr_time = int(time.time() * 1000) if (args.time == "now" or args.time is None) else args.time
 
     if args.date_file and not args.timezone:
@@ -129,7 +135,7 @@ if __name__ == "__main__":
     if args.date_file:
         with open(args.date_file, "r") as file:
             site_data = file.read()
-            date_data = create_date_dict(site_data)
+            date_data = create_date_dict(args.game, site_data)
 try:
     output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time, date_data)
 
