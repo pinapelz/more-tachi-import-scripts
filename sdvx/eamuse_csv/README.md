@@ -42,7 +42,7 @@ https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 ## Automatically Pulling Date Data
 You can do this by passing in `--cookie` instead of a date-file.
 
-> [How to get Cookies?](../../common_docs/aquadx_how_to_get_token.md)
+> [How to get Cookies?](../../common_docs/how_to_get_cookie_header.md)
 >
 > Get the cookies from this page: https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 

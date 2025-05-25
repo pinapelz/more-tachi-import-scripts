@@ -8,6 +8,7 @@ Use with caution as there may be some cases missing.
 - [WACCA AquaDX API recently played (no export functionality in AquaNet yet)](./wacca/aquadx)
 
 - [SDVX e-amusement CSV (with limited Session/Date data)](./sdvx/eamuse_csv)
+- [DDR e-amusement scores](./ddr/eamuse)
 - [SDVX 22vv0 Asphyxia](./sdvx/asphyxia)
 - [jubeat Asphyxia-CZEAve](./jubeat/asphyxia)
 
