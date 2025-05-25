@@ -4,6 +4,10 @@ tl;dr:
 - Please keep an old version of your CSV before your play-session (script helps with this) so the script can tell what plays are new
 - Limit each session to 20 plays since play timestamp is only available for recent 20
 
+> [!NOTE]
+> You must be subscribed to e-amusement Basic Course to use this
+
+
 # e-amusement SDVX CSV to Tachi WARNING!!!
 The CSV provided by Konami doesn't contain any information regarding the date which you played/obtained a particular score. It only keeps your BEST score.
 
@@ -34,6 +38,13 @@ To get this data. Navigate to the e-amusement URL below and press CTRL+S to save
 ```
 https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 ```
+
+## Automatically Pulling Date Data
+You can do this by passing in `--cookie` instead of a date-file.
+
+> [How to get Cookies?](../../common_docs/aquadx_how_to_get_token.md)
+>
+> Get the cookies from this page: https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 
 # Arguments
 ## `sdvx_csv_to_tachi`
