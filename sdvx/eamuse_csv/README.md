@@ -47,6 +47,7 @@ https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html
 | `--time`      | `-t`    | UNIX time (in milliseconds) that should be added to the scores. Defaults to current UNIX time                                | `None`                 |
 | `--date_file` | `-d`    | SDVX e-amusement profile site saved HTML. See README in sdvx/eamuse_csv for instructions. Overrides with --time input if missing | —                   |
 | `--timezone`  | `-tz`   | Only needed if -d is used, specifies what timezone to convert to                                                            | —                      |
+| `--cookie`  | `-c`   | Automatically pull profile data from e-amusement using cookie                                                            | —                      |
 
 ## `eamuse_merge_to_csv`
 

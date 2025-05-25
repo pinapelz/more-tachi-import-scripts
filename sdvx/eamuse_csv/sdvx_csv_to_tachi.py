@@ -2,6 +2,7 @@ import csv
 import json
 import argparse
 import time
+import requests
 
 DIFFICULTY_MAPPING = {
     "NOVICE": "NOV",
@@ -22,6 +23,28 @@ LAMP_MAPPING = {
     "ULTIMATE CHAIN": "ULTIMATE CHAIN",
     "EXCESSIVE COMPLETE": "EXCESSIVE CLEAR"
 }
+
+GAME_DATA = {
+    "EXCEED_GEAR": {
+        "PROFILE_URL": "https://p.eagate.573.jp/game/sdvx/vi/playdata/profile/index.html"
+    }
+}
+
+def get_site_data_with_cookie(url, cookie_header):
+    cookies = {}
+    for cookie in cookie_header.split(";"):
+        name, value = cookie.strip().split("=", 1)
+        cookies[name] = value
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+    }
+    response = requests.get(url, cookies=cookies, headers=headers)
+    response.raise_for_status()
+    return response.text
 
 def create_date_dict(game_ver:str, raw_site_data: str) -> dict:
     from bs4 import BeautifulSoup
@@ -123,6 +146,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--time", help="UNIX time (in milliseconds) that should be added to the scores. Defaults to current UNIX time", default=None)
     parser.add_argument("-d", "--date_file", help="SDVX e-amusement profile site saved HTML. See README in sdvx/eamuse_csv for instructions. Overrides with --time input if missing", required=False)
     parser.add_argument("-tz", "--timezone", help="Only needed if -d is used, specifies what timezone to convert to", required=False)
+    parser.add_argument("-c", "--cookie", help="Pass in a cookie header to automatically pull date data")
     args = parser.parse_args()
     assert args.game in ["EXCEED_GEAR"]
     curr_time = int(time.time() * 1000) if (args.time == "now" or args.time is None) else args.time
@@ -136,6 +160,9 @@ if __name__ == "__main__":
         with open(args.date_file, "r") as file:
             site_data = file.read()
             date_data = create_date_dict(args.game, site_data)
+    elif args.cookie:
+        site_data = get_site_data_with_cookie(GAME_DATA[args.game]["PROFILE_URL"])
+        date_data = create_date_dict(args.game, site_data)
 try:
     output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time, date_data)
 
