@@ -17,6 +17,19 @@ Please note currently all scores are set as DX variant of scores.
 > You only need to specify either `--file` or `--token`/`--url`
 
 # How to get token?
+As of now, your token doesn't change so once you get it once you can re-use it again.
+**DO NOT SHARE THIS TOKEN WITH OTHER PEOPLE**
+
+## The easy way
+1. Go to AquaDX
+2. CTRL+SHIFT+I (Open Dev Tools Panel)
+3. Under the `Console` tab, paste the following command
+```js
+console.log(localStorage.getItem('token'));
+```
+The output will be your AquaDX token
+
+## The hard way
 1. Go to AquaDX
 2. CTRL+SHIFT+I (Open Dev Tools panel)
 3. Go to Network tab
