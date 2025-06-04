@@ -161,7 +161,7 @@ if __name__ == "__main__":
             site_data = file.read()
             date_data = create_date_dict(args.game, site_data)
     elif args.cookie:
-        site_data = get_site_data_with_cookie(GAME_DATA[args.game]["PROFILE_URL"])
+        site_data = get_site_data_with_cookie(GAME_DATA[args.game]["PROFILE_URL"], args.cookie)
         date_data = create_date_dict(args.game, site_data)
 try:
     output_json = convert_sdvx_csv_to_tachi_json(args.csv_filename, "sdvx", "Single", args.service, curr_time, date_data)
