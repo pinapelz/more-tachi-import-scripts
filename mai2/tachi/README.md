@@ -1,3 +1,4 @@
+# Not Maintained. Use the universal script for sessions
 # maimai DX Tachi to Tachi
 
 This is a bookmarklet that will allow you to download data shown in the Web UI of Tachi into a `Batch-Manual` compatible form again.
