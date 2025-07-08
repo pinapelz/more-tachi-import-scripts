@@ -160,79 +160,100 @@
 
     // Chunithm parser
     function parseChunithmScores() {
-        const rows = document.querySelectorAll("table.table tbody tr");
+        const rows = document.querySelectorAll("table tbody tr");
         const difficultyMap = {
-            E: "Expert",
-            A: "Advanced",
-            B: "Basic",
-            M: "Master"
+            "BASIC": "Basic",
+            "ADVANCED": "Advanced",
+            "EXPERT": "Expert",
+            "MASTER": "Master"
         };
         const scores = [];
 
-        for (let i = 0; i < rows.length; i += 3) {
+        for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            if (!row) continue;
+            if (!row || row.classList.contains("expandable-pseudo-row") || row.classList.contains("fake-row")) continue;
 
             const cells = row.querySelectorAll("td");
-            if (cells.length < 11) continue;
+            if (cells.length < 8) continue;
 
-            let difficulty = cells[1].innerText.trim().replace(/\n/, " ").split(" ")[0];
-            if (difficulty.length === 1) {
-                difficulty = difficultyMap[difficulty] || difficulty;
+            // Chart info is in first column (index 0)
+            let difficultyText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() ||
+                                cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
+            let difficulty = difficultyText.split(/\s+/)[0].toUpperCase();
+
+            // Map single letter difficulties
+            if (difficulty === "B") difficulty = "BASIC";
+            else if (difficulty === "A") difficulty = "ADVANCED";
+            else if (difficulty === "E") difficulty = "EXPERT";
+            else if (difficulty === "M") difficulty = "MASTER";
+
+            difficulty = difficultyMap[difficulty] || difficulty;
+
+            // Song info is in third column (index 2)
+            const songAnchor = cells[2].querySelector("a");
+            if (!songAnchor) continue;
+
+            const [titleHtml, artistHtml] = songAnchor.innerHTML.split("<br>");
+            const temp = document.createElement("div");
+            temp.innerHTML = titleHtml;
+            const title = temp.textContent.trim();
+            temp.innerHTML = artistHtml || "";
+            const artist = temp.textContent.trim();
+
+            // Score info is in fourth column (index 3)
+            const scoreText = cells[3].innerText.trim().split("\n").pop().replace(/,/g, "");
+            const scoreValue = parseInt(scoreText, 10);
+            if (isNaN(scoreValue)) continue;
+
+            // Judgements are in fifth column (index 4)
+            const judgementSpans = cells[4].querySelectorAll("span");
+            let jcrit = 0, justice = 0, attack = 0, miss = 0;
+            if (judgementSpans.length >= 4) {
+                jcrit = parseInt(judgementSpans[0].textContent) || 0;
+                justice = parseInt(judgementSpans[1].textContent) || 0;
+                attack = parseInt(judgementSpans[2].textContent) || 0;
+                miss = parseInt(judgementSpans[3].textContent) || 0;
             }
 
-            const songAnchor = cells[3].querySelector("a");
-            const title = songAnchor?.childNodes[0]?.textContent.trim() || "";
-            const artist = songAnchor?.querySelector("small")?.textContent.trim() || "";
-
-            const scoreRank = cells[5].querySelector("strong")?.innerText.trim() || "";
-            const scoreValue = parseInt(
-                cells[5].innerText.replace(scoreRank, "").trim().replace(/,/g, "")
-            );
-
-            const judgementText = cells[6].innerText.trim();
-            const parts = judgementText.split("-").map((x) => parseInt(x.trim()));
-            const [jcrit, justice, attack, miss] = parts;
-
-            const fastSlowMatch = judgementText.match(/\(F:(\d+)\s+S:(\d+)\)/);
-            const fast = fastSlowMatch ? parseInt(fastSlowMatch[1]) : undefined;
-            const slow = fastSlowMatch ? parseInt(fastSlowMatch[2]) : undefined;
-
-            const lamp = cells[7].innerText.trim();
+            // Lamp is in sixth column (index 5)
+            const lampText = cells[5].innerText.trim();
             let clearLamp = "FAILED";
             let noteLamp = "NONE";
 
-            if (lamp.includes("FULL COMBO")) {
+            if (lampText.includes("FULL COMBO")) {
                 noteLamp = "FULL COMBO";
                 clearLamp = "CLEAR";
             }
-            if (lamp.includes("CLEAR")) {
+            if (lampText.includes("CLEAR")) {
                 clearLamp = "CLEAR";
             }
-            if (lamp.includes("ALL JUSTICE")) {
+            if (lampText.includes("ALL JUSTICE")) {
                 noteLamp = "ALL JUSTICE";
                 clearLamp = "CLEAR";
             }
-            if (lamp.includes("ALL JUSTICE CRITICAL")) {
+            if (lampText.includes("ALL JUSTICE CRITICAL")) {
                 noteLamp = "ALL JUSTICE CRITICAL";
                 clearLamp = "CLEAR";
             }
-            if (lamp.includes("HARD")) {
+            if (lampText.includes("HARD")) {
                 clearLamp = "HARD";
             }
-            if (lamp.includes("BRAVE")) {
+            if (lampText.includes("BRAVE")) {
                 clearLamp = "BRAVE";
             }
-            if (lamp.includes("ABSOLUTE")) {
+            if (lampText.includes("ABSOLUTE")) {
                 clearLamp = "ABSOLUTE";
             }
-            if (lamp.includes("CATASTROPHY")) {
+            if (lampText.includes("CATASTROPHY")) {
                 clearLamp = "CATASTROPHY";
             }
 
-            const timestampText = cells[10].innerText.trim().split("\n");
-            const timestampString = timestampText[1]?.trim() || "";
-            const timeAchieved = timestampString ? new Date(timestampString).getTime() : 0;
+            // Timestamp is in eighth column (index 7)
+            let timeAchieved = null;
+            const smallTags = cells[7].querySelectorAll("small");
+            if (smallTags.length > 0) {
+                timeAchieved = toUnixMillis(smallTags[0].textContent.trim());
+            }
 
             const score = {
                 score: scoreValue,
@@ -250,11 +271,6 @@
                 },
                 timeAchieved
             };
-
-            if (fast !== undefined && slow !== undefined) {
-                score.judgements.fast = fast;
-                score.judgements.slow = slow;
-            }
 
             scores.push(score);
         }
