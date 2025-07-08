@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         Tachi Universal Export
-// @namespace    https://tachi.pinapelz.com/
+// @name         Tachi to Tachi Universal Export
+// @namespace    https://kamai.tachi.ac/
 // @version      1.0
 // @description  Universal export script for Tachi scores (Chunithm, Ongeki, Wacca, MaiMaiDX)
 // @author       pinapelz
-// @match        https://tachi.pinapelz.com/u/*/games/chunithm/Single/sessions/*/scores
-// @match        https://tachi.pinapelz.com/u/*/games/ongeki/Single/sessions/*/scores
-// @match        https://tachi.pinapelz.com/u/*/games/wacca/Single/sessions/*/scores
-// @match        https://tachi.pinapelz.com/u/*/games/maimaidx/Single/sessions/*/scores
+// @match        https://kamai.tachi.ac/u/*/games/chunithm/Single/sessions/*/scores
+// @match        https://kamai.tachi.ac/u/*/games/ongeki/Single/sessions/*/scores
+// @match        https://kamai.tachi.ac/u/*/games/wacca/Single/sessions/*/scores
+// @match        https://kamai.tachi.ac/u/*/games/maimaidx/Single/sessions/*/scores
 // @grant        none
 // ==/UserScript==
 

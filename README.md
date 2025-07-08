@@ -14,10 +14,7 @@ Use with caution as there may be some cases missing.
 
 **Export from Tachi**
 This is useful if you want to use your data on Tachi for something else and you do not have access to DB. Converts scores as shown on the site back to a batch-manual format
-- [CHUNITHM](./chuni/tachi)
-- [maimai DX](./mai2/tachi)
-- [O.N.G.E.K.I](./ongeki/tachi)
-- [WACCA](./wacca/tachi)
+- [Universal Tachi to Tachi Userscript](./tachi_to_tachi)
 
 
 > [!CAUTION]

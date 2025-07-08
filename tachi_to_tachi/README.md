@@ -5,8 +5,14 @@ Supports:
 - CHUNITHM
 - maimai DX
 
-Visit the session page for a particular game i.e:
-`https://TACHI_INSTANCE.com/u/{USERNAME}/games/{GAME}/Single/sessions/{SESSION ID}/scores`
+Install a browser extension capable of running/managing userscripts (such as Tampermonkey)
+
+Then [install the Tachi export script](https://gitea.tendokyu.moe/pinapelz/more-tachi-import-scripts/raw/branch/main/tachi_to_tachi/tachi_universal_export.user.js)
+
+Visit the session page for a particular supported game i.e:
+`https://kamai.tachi.ac/u/{USERNAME}/games/{GAME}/Single/sessions/{SESSION ID}/scores`
+
+Select the `All Scores` option (if you are not on this tab already)
 
 Then refresh the page, a button will show on the top right that exports all scores for the current session.
 
