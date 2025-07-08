@@ -1,4 +1,4 @@
-javascript:(function() {
+javascript:(function () {
   function toUnixMillis(s) {
     try { return new Date(s).getTime(); }
     catch { return null; }
@@ -12,9 +12,10 @@ javascript:(function() {
     if (!row || row.classList.contains("expandable-pseudo-row") || row.classList.contains("fake-row")) continue;
 
     const cells = row.querySelectorAll("td");
-    if (cells.length < 9) continue;
+    if (cells.length < 10) continue;
 
-    let chartText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() || "";
+    let chartText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() ||
+                    cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
     let chart = chartText.split(/\s+/)[0].toUpperCase();
     if (chart === "EXP") chart = "EXPERT";
     if (!["BASIC", "ADVANCED", "EXPERT", "MASTER", "LUNATIC"].includes(chart)) continue;
@@ -33,33 +34,49 @@ javascript:(function() {
     const score = parseInt(scoreText, 10);
     if (isNaN(score)) continue;
 
-    const noteLamp = (cells[6].innerText.trim() || "UNKNOWN").toUpperCase();
+    let platinumScore = 0;
+    const platinumText = cells[4].innerText.trim();
+    const platinumMatch = platinumText.match(/\[(\d+)\/(\d+)\]/);
+    if (platinumMatch) {
+      platinumScore = parseInt(platinumMatch[1], 10);
+    }
 
-    const smallTags = cells[8].querySelectorAll("small");
+    let cbreak = 0, breaks = 0, hit = 0, miss = 0, bellCount = 0, totalBellCount = 0;
+    const judgementDiv = cells[5].querySelector("strong > div");
+    if (judgementDiv) {
+      const judgementSpans = judgementDiv.querySelectorAll("span");
+      if (judgementSpans.length >= 4) {
+        cbreak = parseInt(judgementSpans[0].textContent) || 0;
+        breaks = parseInt(judgementSpans[1].textContent) || 0;
+        hit = parseInt(judgementSpans[2].textContent) || 0;
+        miss = parseInt(judgementSpans[3].textContent) || 0;
+      }
+
+      const bellDiv = judgementDiv.nextElementSibling;
+      if (bellDiv) {
+        const bellMatch = bellDiv.textContent.match(/(\d+)\/(\d+)/);
+        if (bellMatch) {
+          bellCount = parseInt(bellMatch[1]);
+          totalBellCount = parseInt(bellMatch[2]);
+        }
+      }
+    }
+
+    let damage = 0;
+    const damageText = cells[6].innerText.trim();
+    damage = parseInt(damageText, 10) || 0;
+
+    const noteLamp = (cells[7].innerText.trim() || "UNKNOWN").toUpperCase();
+
     let timeAchieved = null;
+    const smallTags = cells[9].querySelectorAll("small");
     if (smallTags.length > 0) {
       timeAchieved = toUnixMillis(smallTags[0].textContent.trim());
     }
 
-    let cbreak = 0, breaks = 0, hit = 0, miss = 0, bellCount = 0, totalBellCount = 0, damage = 0;
-    const judgementSpans = cells[5].querySelectorAll("span");
-    if (judgementSpans.length >= 4) {
-      cbreak = parseInt(judgementSpans[0].textContent) || 0;
-      breaks = parseInt(judgementSpans[1].textContent) || 0;
-      hit = parseInt(judgementSpans[2].textContent) || 0;
-      miss = parseInt(judgementSpans[3].textContent) || 0;
-    }
-    if (judgementSpans.length >= 6) {
-      const bellMatch = judgementSpans[4].textContent.match(/(\d+)\/(\d+)/);
-      if (bellMatch) {
-        bellCount = parseInt(bellMatch[1]);
-        totalBellCount = parseInt(bellMatch[2]);
-      }
-      damage = parseInt(judgementSpans[5].textContent) || 0;
-    }
-
     scores.push({
       score,
+      platinumScore,
       noteLamp,
       bellLamp: "NONE",
       matchType: "songTitle",
@@ -76,7 +93,7 @@ javascript:(function() {
     meta: {
       game: "ongeki",
       playtype: "Single",
-      service: "bookmarkelt"
+      service: "bookmarklet Tachi to Tachi"
     },
     scores
   };
