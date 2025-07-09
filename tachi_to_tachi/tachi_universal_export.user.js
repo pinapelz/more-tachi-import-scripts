@@ -161,12 +161,6 @@
     // Chunithm parser
     function parseChunithmScores() {
         const rows = document.querySelectorAll("table tbody tr");
-        const difficultyMap = {
-            "BASIC": "Basic",
-            "ADVANCED": "Advanced",
-            "EXPERT": "Expert",
-            "MASTER": "Master"
-        };
         const scores = [];
 
         for (let i = 0; i < rows.length; i++) {
@@ -186,8 +180,6 @@
             else if (difficulty === "A") difficulty = "ADVANCED";
             else if (difficulty === "E") difficulty = "EXPERT";
             else if (difficulty === "M") difficulty = "MASTER";
-
-            difficulty = difficultyMap[difficulty] || difficulty;
 
             // Song info is in third column (index 2)
             const songAnchor = cells[2].querySelector("a");
