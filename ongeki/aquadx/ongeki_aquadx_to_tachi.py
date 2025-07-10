@@ -111,7 +111,7 @@ if __name__ == "__main__":
         "-s",
         "--service",
         help="Service description to be shown on Tachi (Note for where this score came from)",
-        default="AquaDX Chuni Import",
+        default="AquaDX ONGEKI Import",
     )
     parser.add_argument("-t", "--token", help="Use AquaNet Token to directly grab data from API. Get it from Network tab in your browser and check the API request it makes ?token=???", required=False)
     parser.add_argument("-u", "--url", help="AquaNet API endpoint. No need to use this unless you self-host AquaDX", default="https://aquadx.net/aqua")
