@@ -77,6 +77,7 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
                 "identifier": str(song_title),
                 "difficulty": DIFFICULTY_MAPPING[level],
                 "timeAchieved": timestamp * 1000 if timestamp else None,
+                "platinumScore": plat_score,
                 "judgements": {
                     "cbreak": j_cbreak,
                     "break": j_break,
@@ -87,7 +88,6 @@ def convert_from_aquadx_json_to_tachi_json(raw_data: str, output_file: str, serv
                     "maxCombo": combo,
                     "bellCount": bell_count,
                     "totalBellCount": total_bell_count,
-                    "platScore": plat_score
                 },
             }
 
