@@ -284,7 +284,11 @@
             "DX Advanced": "DX Advanced",
             "DX Expert": "DX Expert",
             "DX Master": "DX Master",
-            "DX Re:Master": "DX Re:Master"
+            "DX Re:Master": "DX Re:Master",
+            "Expert": "Expert",
+            "Advanced": "Advanced",
+            "Basic": "Basic",
+            "Master": "Master"
         };
 
         const lampMap = {
