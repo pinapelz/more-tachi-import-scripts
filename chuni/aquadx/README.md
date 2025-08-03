@@ -1,3 +1,6 @@
+# IMPORTANT!!!
+AquaDX CHUNITHM now has Batch-Manual Export for Tachi. You should use that instead when possible.
+
 CHUNITHM NEW and beyond. Both self-hosted and the primary AquaDX server is supported:
 
 [How to get AquaDX Token?](../../common_docs/aquadx_how_to_get_token.md)
