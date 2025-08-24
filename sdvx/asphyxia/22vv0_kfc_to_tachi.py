@@ -104,7 +104,7 @@ if __name__ == "__main__":
         help="Service description to be shown on Tachi (Note for where this score came from)",
         default="SOUND VOLTEX Asphyxia (22vv0)",
     )
-    parser.add_argument("-f", "--file", help="AsphyxiaCORE SOND VOLREX .db file (sdvx@asphyxia.db)", required=True)
+    parser.add_argument("-f", "--file", help="AsphyxiaCORE SOUND VOLTEX .db file (sdvx@asphyxia.db)", required=True)
     parser.add_argument(
         "-o", "--output", help="Output filename", default="sdvx_asphyxia_batch_manual.json"
     )
