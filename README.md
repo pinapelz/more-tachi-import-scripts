@@ -16,6 +16,11 @@ Use with caution as there may be some cases missing.
 This is useful if you want to use your data on Tachi for something else and you do not have access to DB. Converts scores as shown on the site back to a batch-manual format
 - [Universal Tachi to Tachi Userscript](./tachi_to_tachi)
 
+**Tools**
+- [SDVX e-amusement CSV PB Deduplication (with limited Session/Date data)](./sdvx/pb_merge)
+
+This script compares a e-amusement exported SDVX score CSV against your scores on Tachi. Then generates a new CSV in the same format with only scores that have not been successfully imported to Tachi.
+
 
 > [!CAUTION]
 > If you are using Kamaitachi or using someone else's Tachi instance please check the rules to ensure that you are complying with the rules before importing your scores!!!
