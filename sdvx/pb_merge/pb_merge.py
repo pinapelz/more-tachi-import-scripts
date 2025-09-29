@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import requests
+import time
 
 DIFFICULTY_MAPPING = {
     "NOVICE": "NOV",
@@ -40,6 +41,7 @@ def merge_csv(input_file: str, tachi_url: str, username: str, output_file: str):
             print(f"[{current_row}/{total_rows}] Searching for score: {title} at difficulty {diff}")
             try:
                 response = requests.get(api_url)
+                time.sleep(0.2)
                 response.raise_for_status()
                 data = response.json()
                 charts = data["body"]["charts"]
