@@ -45,7 +45,7 @@ def merge_csv(input_file: str, tachi_url: str, username: str, output_file: str):
                 response.raise_for_status()
                 data = response.json()
                 charts = data["body"]["charts"]
-                is_unique = False
+                is_unique = True
                 if len(charts) == 0:
                     print("Score is unique")
                     is_unique = True
