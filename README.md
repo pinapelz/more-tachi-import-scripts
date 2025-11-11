@@ -1,6 +1,6 @@
 # more-tachi-import-scripts
-Some scripts to convert from various sources to Tachi/Kamaitachi "Batch Manual" import jsons.
-Use with caution as there may be some cases missing.
+Some scripts to convert from various sources to Tachi/Kamaitachi compatible formats.
+Use with caution as there may be some cases missing/not handled.
 
 - [CHUNITHM AquaDX (AquaNet WebUI Export) User Data Export JSON](./chuni/aquadx)
 - [maimai DX AquaDX (AquaNet WebUI Export) User Data Export JSON](./mai2/aquadx)
