@@ -66,7 +66,7 @@
 
             // Chart info is in first column
             let chartText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() ||
-                           cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
+                cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
             let chart = chartText.split(/\s+/)[0].toUpperCase();
             if (chart === "EXP") chart = "EXPERT";
             if (!["BASIC", "ADVANCED", "EXPERT", "MASTER", "LUNATIC"].includes(chart)) continue;
@@ -172,7 +172,7 @@
 
             // Chart info is in first column (index 0)
             let difficultyText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() ||
-                                cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
+                cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
             let difficulty = difficultyText.split(/\s+/)[0].toUpperCase();
 
             // Map single letter difficulties
@@ -366,73 +366,93 @@
         };
     }
 
-    // Wacca parser (using Ongeki PB structure as base)
+// Wacca parser
     function parseWaccaScores() {
         const rows = document.querySelectorAll("table tbody tr");
         const scores = [];
 
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
+            // Skip expandable/fake rows
+            if (row.classList.contains("expandable-pseudo-row") || row.classList.contains("fake-row")) continue;
+
             const cells = row.querySelectorAll("td");
-            if (cells.length < 11) continue;
+            // Ensure we have enough columns (Wacca table has ~9 columns)
+            if (cells.length < 8) continue;
 
-            let chart = cells[0].innerText.trim().split(/\s+/)[0].toUpperCase();
+            // --- 1. Chart/Difficulty (Column 0) ---
+            let chartText = cells[0].querySelector("div.d-none.d-lg-block")?.textContent.trim() ||
+                            cells[0].querySelector("div.d-lg-none")?.textContent.trim() || "";
+
+            // Clean up difficulty text (e.g. "EXPERT 11" -> "EXPERT")
+            let chart = chartText.split(/\s+/)[0].toUpperCase();
+
+            // Map abbreviations to Tachi standard difficulties
             if (chart === "EXP") chart = "EXPERT";
-            if (!["BASIC", "ADVANCED", "EXPERT", "MASTER", "LUNATIC"].includes(chart)) continue;
+            if (chart === "INF") chart = "INFERNO";
+            if (chart === "HARD") chart = "HARD";
+            if (chart === "NORM" || chart === "NORMAL") chart = "NORMAL";
 
+            // Skip if difficulty isn't recognized
+            if (!["NORMAL", "HARD", "EXPERT", "INFERNO"].includes(chart)) continue;
+
+            // --- 2. Song Info (Column 2) ---
             const anchor = cells[2].querySelector("a");
             if (!anchor) continue;
 
-            const parts = anchor.innerHTML.split("<br>");
-            const temp = document.createElement("div");
-            temp.innerHTML = parts[0];
-            const title = temp.textContent.trim();
-            temp.innerHTML = parts[1] || "";
-            const artist = temp.textContent.trim();
+            const titleNode = anchor.childNodes[0];
+            const title = titleNode ? titleNode.textContent.trim() : "";
+            const artistNode = anchor.querySelector("small");
+            const artist = artistNode ? artistNode.textContent.trim() : "";
 
-            const scoreText = cells[4].innerText.trim().split("\n").pop().replace(/,/g, "");
+            // --- 3. Score (Column 3) ---
+            // Format: S+ (newline) 936,217
+            const scoreText = cells[3].innerText.trim().split("\n").pop().replace(/,/g, "");
             const score = parseInt(scoreText, 10);
             if (isNaN(score)) continue;
 
-            const noteLamp = (cells[7].innerText.trim() || "UNKNOWN").toUpperCase();
+            // --- 4. Judgements (Column 4) ---
+            // Format: Marvelous-Great-Good-Miss (inside spans)
+            const judgeSpans = cells[4].querySelectorAll("span");
+            let marvelous = 0, great = 0, good = 0, miss = 0;
 
-            const small = cells[10].querySelector("small");
-            const dateText = small?.textContent.trim();
-            const timeAchieved = dateText ? toUnixMillis(dateText) : null;
+            if (judgeSpans.length >= 4) {
+                marvelous = parseInt(judgeSpans[0].textContent) || 0;
+                great = parseInt(judgeSpans[1].textContent) || 0;
+                good = parseInt(judgeSpans[2].textContent) || 0;
+                miss = parseInt(judgeSpans[3].textContent) || 0;
+            }
 
-            const judgementDiv = cells[6].querySelector("div");
-            let cbreak = 0, breaks = 0, hit = 0, miss = 0, bellCount = 0, totalBellCount = 0, damage = 0;
+            // --- 5. Lamp (Column 5) ---
+            // Tachi expects: "FAILED", "CLEAR", "MISSLESS", "FULL COMBO", "ALL MARVELOUS"
+            let lamp = cells[5].innerText.trim().toUpperCase();
 
-            if (judgementDiv) {
-                const spans = judgementDiv.parentElement.querySelectorAll("span");
-                if (spans.length >= 4) {
-                    cbreak = parseInt(spans[0].textContent) || 0;
-                    breaks = parseInt(spans[1].textContent) || 0;
-                    hit = parseInt(spans[2].textContent) || 0;
-                    miss = parseInt(spans[3].textContent) || 0;
-                }
-                const bellDamageSpans = judgementDiv.parentElement.parentElement.querySelectorAll("span");
-                if (bellDamageSpans.length >= 6) {
-                    const bellMatch = bellDamageSpans[4].textContent.match(/(\d+)\/(\d+)/);
-                    if (bellMatch) {
-                        bellCount = parseInt(bellMatch[1]);
-                        totalBellCount = parseInt(bellMatch[2]);
-                    }
-                    damage = parseInt(bellDamageSpans[5].textContent) || 0;
-                }
+            // Normalize Lamp if necessary
+            if (lamp === "UNKNOWN" || lamp === "") lamp = "FAILED";
+            // Map "AM" to "ALL MARVELOUS" if the site abbreviates it,
+            // otherwise standard text like "MISSLESS" or "CLEAR" is valid.
+
+            // --- 6. Timestamp (Column 7) ---
+            let timeAchieved = null;
+            const smallTags = cells[7].querySelectorAll("small");
+            if (smallTags.length > 0) {
+                timeAchieved = toUnixMillis(smallTags[0].textContent.trim());
             }
 
             scores.push({
                 score,
-                noteLamp,
-                bellLamp: "NONE",
+                lamp, // Correct key for Tachi (was noteLamp)
                 matchType: "songTitle",
                 identifier: title,
                 artist,
                 difficulty: chart,
                 timeAchieved,
-                judgements: { cbreak, break: breaks, hit, miss },
-                optional: { bellCount, totalBellCount, damage }
+                judgements: {
+                    marvelous,
+                    great,
+                    good,
+                    miss
+                }
             });
         }
 
