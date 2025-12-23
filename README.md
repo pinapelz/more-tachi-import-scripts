@@ -10,6 +10,7 @@ Use with caution as there may be some cases missing/not handled.
 - [SDVX e-amusement CSV (with limited Session/Date data)](./sdvx/eamuse_csv)
 - [DDR e-amusement scores](./ddr/eamuse)
 - [SDVX 22vv0 Asphyxia](./sdvx/asphyxia)
+- [IIDX duel0213 Asphyxia](./iidx/asphyxia)
 - [jubeat Asphyxia-CZEAve](./jubeat/asphyxia)
 
 **Export from Tachi**
