@@ -1,3 +1,5 @@
+# Deprecated Batch-Manual export is now available right from AquaNet!
+
 maimai DX. Both self-hosted and the primary AquaDX server is supported:
 
 Please note currently all scores are set as DX variant of scores.

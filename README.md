@@ -2,8 +2,6 @@
 Some scripts to convert from various sources to Tachi/Kamaitachi compatible formats.
 Use with caution as there may be some cases missing/not handled.
 
-- [CHUNITHM AquaDX (AquaNet WebUI Export) User Data Export JSON](./chuni/aquadx)
-- [maimai DX AquaDX (AquaNet WebUI Export) User Data Export JSON](./mai2/aquadx)
 - [O.N.G.E.K.I AquaDX API recently played (no export functionality in AquaNet yet)](./ongeki/aquadx)
 - [WACCA AquaDX API recently played (no export functionality in AquaNet yet)](./wacca/aquadx)
 
