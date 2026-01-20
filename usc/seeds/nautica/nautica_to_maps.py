@@ -157,7 +157,7 @@ def create_row_db(data):
     conn.close()
     return result is not None
 
-def process_chart_page(page_num: int, db_path: str):
+def process_chart_page(page_num: int, db_path: str, auto_stop: bool):
     charts = []
     response = requests.get(NAUTICA_URL + "?page="+str(page_num), headers=headers)
     resp_page_obj = json.loads(response.text)
@@ -179,6 +179,9 @@ def process_chart_page(page_num: int, db_path: str):
             difficulty = int(chart["difficulty"])
             level = chart["level"]
             if chart_already_processed(db_path, chart["id"]):
+                if auto_stop:
+                    print("[TERMINATE] Auto stopping due to finding a chart that's already added")
+                    exit(0)
                 print(f"[SKIP] {title} - {difficulty} already exists. Skipping...")
                 continue
             effector = chart["effector"]
@@ -205,6 +208,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--db", help="Path to existing maps.db if none-specified this script will search in current working dir or create a new one")
     parser.add_argument("--start-page", help="Start from this page on ksm.dev", default=1)
+    parser.add_argument("--auto-stop", help="Auto stop on name collision (indicates all caught up)", action="store_true")
     args = parser.parse_args()
     db_path = args.db
     if not db_path:
@@ -212,9 +216,10 @@ if __name__ == "__main__":
     create_maps_db_if_not_exists(db_path)
     num_pages = get_nautica_num_pages()
     start_page = int(args.start_page)
+    auto_stop = bool(args.auto_stop)
     print(f"Found {num_pages} to process...")
     for i in range(start_page, num_pages + 1):
         print(f"[PROGRESS] {i}/{num_pages + 1} COMPLETED")
-        charts = process_chart_page(i, db_path)
+        charts = process_chart_page(i, db_path, auto_stop)
         for chart in charts:
             create_row_db(chart)
